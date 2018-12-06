@@ -1,4 +1,4 @@
-
+import java.util.*;
 /**
  * Although this class has a history of several years,
  * it is starting from a blank-slate, new and clean implementation
@@ -23,6 +23,7 @@ public class HuffProcessor {
 	
 	public static final int DEBUG_HIGH = 4;
 	public static final int DEBUG_LOW = 1;
+	
 	
 	public HuffProcessor() {
 		this(0);
@@ -49,6 +50,11 @@ public class HuffProcessor {
 		}
 		out.close();
 	}
+	
+	
+	
+	
+	
 	/**
 	 * Decompresses a file. Output file must be identical bit-by-bit to the
 	 * original.
@@ -60,11 +66,74 @@ public class HuffProcessor {
 	 */
 	public void decompress(BitInputStream in, BitOutputStream out){
 
-		while (true){
-			int val = in.readBits(BITS_PER_WORD);
-			if (val == -1) break;
-			out.writeBits(BITS_PER_WORD, val);
-		}
+		int bits = in.readBits(BITS_PER_INT);
+		if(bits != HUFF_TREE)
+			throw new HuffException("Illegal header starts with "+bits);
+		
+		HuffNode root = readTreeHeader(in);
+		readCompressedBits(root, in, out);
 		out.close();
 	}
+	
+
+	
+	/*
+	 * Do a preorder traversal of tree header based on the beginning of the
+	 * input stream and return this tree.
+	 */
+	private HuffNode readTreeHeader(BitInputStream in) {
+		int bit = in.readBits(1);
+		if(bit==0) {
+			HuffNode left = readTreeHeader(in);
+			HuffNode right = readTreeHeader(in);
+			return new HuffNode(0,0,left,right);
+		}
+		else {
+			return new HuffNode(in.readBits(BITS_PER_WORD+1), 0, null, null);
+		}
+		
+	}
+	
+	private void readCompressedBits(HuffNode root, BitInputStream in, BitOutputStream out) {
+
+		HuffNode current = root;
+		
+		while(true) {
+
+			int bits = in.readBits(1);
+			if(bits == -1) {
+				throw new HuffException("Bad input, no PSEUDO_EOF");
+			}
+			else {
+				if (bits == 0) 
+					current = current.left();
+				else
+					current = current.right();
+				if(current.left() == null && current.right() == null) { 
+					if(current.value()==PSEUDO_EOF)
+						break;
+					else {
+						out.writeBits(BITS_PER_WORD, current.value());
+						current = root;
+					}
+
+				}	
+			}	
+		}
+	}
+	
+	
+	
+	
 }
+
+
+
+
+
+
+
+
+
+
+
