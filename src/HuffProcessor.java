@@ -88,7 +88,7 @@ public class HuffProcessor {
 	while(pq.size()>1) {
 		HuffNode left = pq.remove();
 		HuffNode right = pq.remove();
-		HuffNode t = new HuffNode(-1, left.weight() +right.weight(),
+		HuffNode t = new HuffNode(-1, left.myWeight + right.myWeight,
 									left, right);
 		pq.add(t);
 	}
@@ -109,13 +109,13 @@ public class HuffProcessor {
 	private void makeCodingsFromTree(HuffNode root, String path, Map<Integer, String> myMap) {
 		if(root==null)
 	 		return;
-		 if(root.left() == null && root.right()==null) {
-			 myMap.put(root.value(), path);
+		 if(root.myLeft == null && root.myRight==null) {
+			 myMap.put(root.myValue, path);
 			 return;
 		 }
 		 
-		 makeCodingsFromTree(root.left(), path+"0", myMap);
-		 makeCodingsFromTree(root.right(), path+"1", myMap);
+		 makeCodingsFromTree(root.myLeft, path+"0", myMap);
+		 makeCodingsFromTree(root.myRight, path+"1", myMap);
 	}
 	
 	private void writer(HuffNode root, BitOutputStream out) {
@@ -127,15 +127,15 @@ public class HuffProcessor {
 		if(root==null)
 			return;
 
-		if(root.left() == null && root.right()==null) {
+		if(root.myLeft == null && root.myRight==null) {
 			out.writeBits(1, 1);
 
-			out.writeBits(BITS_PER_WORD+1, root.value());
+			out.writeBits(BITS_PER_WORD+1, root.myValue);
 		}
 		else {
 			out.writeBits(1, 0);
-			writeTree(root.left(), out);
-			writeTree(root.right(), out);
+			writeTree(root.myLeft, out);
+			writeTree(root.myRight, out);
 		}
 	}
 	
@@ -198,14 +198,14 @@ public class HuffProcessor {
 			}
 			else {
 				if (bits == 0) 
-					current = current.left();
+					current = current.myLeft;
 				else
-					current = current.right();
-				if(current.left() == null && current.right() == null) { 
-					if(current.value()==PSEUDO_EOF)
+					current = current.myRight;
+				if(current.myLeft == null && current.myRight == null) { 
+					if(current.myValue==PSEUDO_EOF)
 						break;
 					else {
-						out.writeBits(BITS_PER_WORD, current.value());
+						out.writeBits(BITS_PER_WORD, current.myValue);
 						current = root;
 					}
 
