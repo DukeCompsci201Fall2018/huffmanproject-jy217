@@ -47,7 +47,6 @@ public class HuffProcessor {
 			HuffNode root = makeTree(counts);
 			Map<Integer, String> codings = makeCodingsFromTree(root);
 			writer(root, out);
-			
 			in.reset();
 			writeCompressedBits(in, codings, out);
 		}
@@ -97,12 +96,9 @@ public class HuffProcessor {
 	return root;
 }
  
- private Map<Integer, String> makeCodingsFromTree(HuffNode root) {
-		
-	 	Map<Integer, String> cod = new TreeMap<>();
-		
+ private Map<Integer, String> makeCodingsFromTree(HuffNode root) {	
+	 	Map<Integer, String> cod = new TreeMap<>();		
 		makeCodingsFromTree(root, "", cod);
-		
 		return cod;
 	}
 
@@ -120,6 +116,7 @@ public class HuffProcessor {
 	
 	private void writer(HuffNode root, BitOutputStream out) {
 		out.writeBits(BITS_PER_INT, HUFF_TREE);
+		
 		writeTree(root, out);
 		
 	}
@@ -139,7 +136,7 @@ public class HuffProcessor {
 		}
 	}
 	
-	public void writeCompressedBits(BitInputStream in, Map<Integer, String> codings, BitOutputStream out) {
+	private void writeCompressedBits(BitInputStream in, Map<Integer, String> codings, BitOutputStream out) {
 		while(true) {
 			int cur =  in.readBits(BITS_PER_WORD);
 			if(cur==-1)
