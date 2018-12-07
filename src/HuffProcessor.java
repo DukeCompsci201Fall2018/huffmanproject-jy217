@@ -71,6 +71,7 @@ public class HuffProcessor {
 		for(int key:meMap.keySet()) {
 			freq[key]=meMap.get(key);
 		}
+		
 		freq[PSEUDO_EOF] = 1;
 		return freq;
 	}
@@ -80,12 +81,12 @@ public class HuffProcessor {
  private HuffNode makeTree(int[] counts) {
 	PriorityQueue<HuffNode> pq = new PriorityQueue<>();
 	
-	for(int k=0; k<256; k++) {
+	for(int k=0; k<257; k++) {
 		if(counts[k]!=0)
 			pq.add(new HuffNode(k, counts[k]));
 	}
 	
-	pq.add(new HuffNode(PSEUDO_EOF,1));
+	//pq.add(new HuffNode(PSEUDO_EOF,1));
 
 	while(pq.size()>1) {
 		HuffNode left = pq.remove();
