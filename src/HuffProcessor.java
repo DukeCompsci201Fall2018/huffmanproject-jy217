@@ -49,6 +49,7 @@ public class HuffProcessor {
 			writer(root, out);
 			in.reset();
 			writeCompressedBits(in, codings, out);
+			out.close();
 		}
 	
 	
@@ -134,7 +135,7 @@ public class HuffProcessor {
 		if(root==null)
 			return;
 
-		if(root.myLeft == null && root.myRight==null) {
+		if (root.myLeft == null && root.myRight==null) {
 			out.writeBits(1, 1);
 			out.writeBits(BITS_PER_WORD+1, root.myValue);
 		}
