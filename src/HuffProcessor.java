@@ -55,9 +55,9 @@ public class HuffProcessor {
 	
 	private int[] readForCounts(BitInputStream in) {
 		
-		int[] answer = new int[257];
+		int[] freq = new int[257];
 		Map<Integer,Integer> meMap = new HashMap<>();
-		//meMap.put(PSEUDO_EOF, 1);
+		freq[PSEUDO_EOF] = 1;
 		
 		while(true) {
 			int current = in.readBits(BITS_PER_WORD);
@@ -70,10 +70,10 @@ public class HuffProcessor {
 		}
 
 		for(int key:meMap.keySet()) {
-			answer[key]=meMap.get(key);
+			freq[key]=meMap.get(key);
 		}
 		
-		return answer;
+		return freq;
 	}
 	
 
