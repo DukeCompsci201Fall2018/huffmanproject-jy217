@@ -103,9 +103,9 @@ public class HuffProcessor {
  
  
  private Map<Integer, String> makeCodingsFromTree(HuffNode root) {	
-	 	Map<Integer, String> cod = new TreeMap<>();		
-		makeCodingsFromTree(root, "", cod);
-		return cod;
+	 	Map<Integer, String> codings = new TreeMap<>();		
+		makeCodingsFromTree(root, "", codings);
+		return codings;
 	}
 
 	private void makeCodingsFromTree(HuffNode root, String path, Map<Integer, String> myMap) {
@@ -135,7 +135,6 @@ public class HuffProcessor {
 
 		if(root.myLeft == null && root.myRight==null) {
 			out.writeBits(1, 1);
-
 			out.writeBits(BITS_PER_WORD+1, root.myValue);
 		}
 		else {
